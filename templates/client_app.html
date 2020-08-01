@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        var targetContainer = document.getElementById("target_div");
+        var eventSource = new EventSource("/stream");
+        eventSource.onmessage = function(e) {
+            targetContainer.innerHTML = e.data;
+        };
+    </script>
+</head>
+<body>
+    <div id="target_div">Watch this space...</div>
+</body>
+
+</html>
