@@ -3,16 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script>
-        var targetContainer = document.getElementById("target_div");
-        var eventSource = new EventSource("/stream");
-        eventSource.onmessage = function(e) {
-            targetContainer.innerHTML = e.data;
-        };
-    </script>
+<link rel='stylesheet' href={{url_for('static', filename='style.css')}} >
 </head>
 <body>
-    <div id="target_div">Watch this space...</div>
-</body>
+{#    <h2 class="sticky">Rules</h2>#}
+    <div id="main_container" class="main_container">
+        {%  for rule in result %}
+            <div class="container">
+                <div class = "rules_inner">{{ rule[1] }}</div>
+                <div class="overlay">
+                    <div class="text">{{ rule[0] }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <h2 class="sticky">Rules</h2>
+<h2 class="sticky_bot"><button class="button_add"> + </button></h2>
 
+</body>
+    <script>
+        {#function hiddenaddElement(){#}
+        {#    let newDiv1 = document.createElement("div");#}
+        {#    newDiv1.className="container";#}
+        {##}
+        {#    let newDiv2 = document.createElement("div");#}
+        {#    newDiv2.className="rules_inner";#}
+        {#    newDiv2.style["border-left"] = "black";#}
+            {#"white 10px solid"#}
+        {#    let newDiv3 = document.createElement("div");#}
+        {#    newDiv3.className="overlay";#}
+        {#    newDiv3.style["background-color"] = "black";#}
+        {##}
+        {#    let newDiv4 = document.createElement("div");#}
+        {#    newDiv4.className = "text";#}
+        {##}
+        {##}
+        {#    newDiv3.appendChild(newDiv4)#}
+        {#    newDiv1.appendChild(newDiv2);#}
+        {#    newDiv1.appendChild(newDiv3);#}
+        {#    document.getElementById("main_container").appendChild(newDiv1);#}
+
+
+        function addElement(){
+            let newDiv1 = document.createElement("div");
+            newDiv1.className="container";
+
+            let newDiv2 = document.createElement("div");
+            newDiv2.className="rules_inner";
+            let newDiv3 = document.createElement("div");
+            newDiv3.className="overlay";
+
+            let newDiv4 = document.createElement("div");
+            newDiv4.className = "text";
+
+
+            newDiv3.appendChild(newDiv4)
+            newDiv1.appendChild(newDiv2);
+            newDiv1.appendChild(newDiv3);
+            document.getElementById("main_container").appendChild(newDiv1);
+        }
+
+        let total_containers = {{ result_len }};
+        console.log(total_containers)
+        let targetContainer_1 = document.getElementsByClassName("rules_inner");
+        let targetContainer_2 = document.getElementsByClassName("text")
+        let eventSource = new EventSource("/stream");
+        eventSource.onmessage = function(e) {
+            let i;
+            let data = JSON.parse(e.data)
+            //addElement() // how to only do when a new entry occurs
+                let create_addElement = true;
+                for(i = 0; i < targetContainer_1.length; i++) {
+                    if (targetContainer_1[i].innerHTML === undefined) create_addElement = false;
+                    targetContainer_1[i].innerHTML = data[i][1];
+                    targetContainer_2[i].innerHTML = data[i][0];
+                }
+                if (create_addElement) addElement();
+
+        };
+        addElement()
+    </script>
 </html>
